@@ -150,136 +150,10 @@ def get_load_shipd(datadir):
 
 import torch
 import numpy as np
-from botorch.test_functions import Ackley
 from scipy.stats import qmc
 
 # Individuals should be in the range of -10, 10
 
-def Ackley2D(individuals): # This should be the test function
-    
-    #############################################################################
-    #############################################################################
-    # Set function here:
-    dimm = 2
-    dtype = torch.double
-    device = torch.device("cpu")
-    fun = Ackley(dim=dimm, negate=True).to(dtype=dtype, device=device)
-    fun.bounds[0, :].fill_(-5)
-    fun.bounds[1, :].fill_(10)
-    dim = fun.dim
-    lb, ub = fun.bounds
-    #############################################################################
-    #############################################################################
-    
-    
-    n = individuals.size(0)
-
-    fx = fun(individuals)
-    fx = fx.reshape((n, 1))
-
-    #############################################################################
-    ## Constraints
-    gx1 = torch.sum(individuals,1)  # sigma(x) <= 0 
-    gx1 = gx1.reshape((n, 1))
-
-    gx2 = torch.norm(individuals, p=2, dim=1)-5  # norm_2(x) -3 <= 0
-    gx2 = gx2.reshape((n, 1))
-
-    gx = torch.cat((gx1, gx2), 1)
-    #############################################################################
-    
-    
-    return gx, fx
-
-def Ackley2D_Scaling(X):
-    
-    X_scaled = X*15-5
-    
-    return X_scaled
-
-def Ackley6D(individuals): # This should be the test function
-    
-    #############################################################################
-    #############################################################################
-    # Set function here:
-    dimm = 6
-    dtype = torch.double
-    device = torch.device("cpu")
-    fun = Ackley(dim=dimm, negate=True).to(dtype=dtype, device=device)
-    fun.bounds[0, :].fill_(-5)
-    fun.bounds[1, :].fill_(10)
-    dim = fun.dim
-    lb, ub = fun.bounds
-    #############################################################################
-    #############################################################################
-    
-    
-    n = individuals.size(0)
-
-    fx = fun(individuals)
-    fx = fx.reshape((n, 1))
-
-    #############################################################################
-    ## Constraints
-    gx1 = torch.sum(individuals,1)  # sigma(x) <= 0 
-    gx1 = gx1.reshape((n, 1))
-
-    gx2 = torch.norm(individuals, p=2, dim=1)-5  # norm_2(x) -3 <= 0
-    gx2 = gx2.reshape((n, 1))
-
-    gx = torch.cat((gx1, gx2), 1)
-    #############################################################################
-    
-    
-    return gx, fx
-
-def Ackley6D_Scaling(X):
-    
-    X_scaled = X*15-5
-    
-    return X_scaled
-
-def Ackley10D(individuals): # This should be the test function
-    
-    #############################################################################
-    #############################################################################
-    # Set function here:
-    dimm = 10
-    dtype = torch.double
-    device = torch.device("cpu")
-    fun = Ackley(dim=dimm, negate=True).to(dtype=dtype, device=device)
-    fun.bounds[0, :].fill_(-5)
-    fun.bounds[1, :].fill_(10)
-    dim = fun.dim
-    lb, ub = fun.bounds
-    #############################################################################
-    #############################################################################
-    
-    
-    n = individuals.size(0)
-
-    fx = fun(individuals)
-    fx = fx.reshape((n, 1))
-
-    #############################################################################
-    ## Constraints
-    gx1 = torch.sum(individuals,1)  # sigma(x) <= 0 
-    gx1 = gx1.reshape((n, 1))
-
-    gx2 = torch.norm(individuals, p=2, dim=1)-5  # norm_2(x) -3 <= 0
-    gx2 = gx2.reshape((n, 1))
-
-    gx = torch.cat((gx1, gx2), 1)
-    #############################################################################
-    
-    
-    return gx, fx
-
-def Ackley10D_Scaling(X):
-    
-    X_scaled = X*15-5
-    
-    return X_scaled
 def Ashbychart_wrapper(datadir): # This should be the test function
     def Ashbychart(individuals, datadir=datadir): # This should be the test function
 
@@ -1302,10 +1176,7 @@ def WeldedBeam_Scaling(X):
     return X_scaled
 
 def lookup_function(function_ID, datadir):
-    function_dict = {"Ackley2D":[Ackley2D, Ackley2D_Scaling, 2, 1e3, 1e3],
-                "Ackley6D":[Ackley6D, Ackley6D_Scaling, 6, 1e3, 1e3],
-                "Ackley10D":[Ackley10D, Ackley10D_Scaling, 10, 1e3, 1e3],
-                "Ashbychart":[Ashbychart_wrapper(datadir), Ashbychart_Scaling, 3, 1e3, 1e3], #Scaling incorporated into Ashbychart function directly
+    function_dict = {"Ashbychart":[Ashbychart_wrapper(datadir), Ashbychart_Scaling, 3, 1e3, 1e3], #Scaling incorporated into Ashbychart function directly
                 "CantileverBeam":[CantileverBeam, CantileverBeam_Scaling, 10, 1e3, 1e3],
                 "CompressionSpring":[CompressionSpring, CompressionSpring_Scaling, 3, 1e3, 1e3],
                 "Car":[Car, Car_Scaling, 11, 1e3, 1e3],
