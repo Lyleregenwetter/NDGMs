@@ -1,5 +1,3 @@
-from pymoo.indicators.hv import HV
-from pymoo.indicators.gd import GD
 import numpy as np
 import pandas as pd
 import os
@@ -10,29 +8,6 @@ from tqdm import trange
 import eval_prd
 
 from scipy.spatial.distance import cdist
-
-def Hypervolume_wrapper(hv_ref="auto"):
-    def Hypervolume(x_eval, y_eval, x_data, y_data, n_data, scorebars, hv_ref=hv_ref):
-        y_eval = np.array(y_eval)
-        if scorebars:
-            print("Calculating Hypervolume")
-        if hv_ref=="auto":
-            hv_ref = np.quantile(y_eval, 0.99, axis=0)
-            print("Warning: no reference point provided!")
-        hv = HV(ref_point=hv_ref)
-        hvol = hv(y_eval)
-        return None, hvol
-    return Hypervolume
-
-def Generational_distance_wrapper(pf):
-    def Generational_distance(x_eval, y_eval, x_data, y_data, n_data, scorebars, pf=pf):
-        y_eval = np.array(y_eval)
-        if scorebars:
-            print("Calculating Generational Distance")
-        gd = GD(pf)
-        hvol = gd(y_eval)
-        return None, hvol
-    return Generational_distance
 
 def get_perc_band(value, data, band):
     perc = sum(data < value) / len(data)
